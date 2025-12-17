@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IPC Debugger - Inter-Process Communication Monitor</title>
+  <meta name="description" content="Real-time monitoring, analysis, and visualization of inter-process communication in operating systems.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="ipc-debugger.css">
+</head>
+<body>
+  <div class="app">
+    <!-- Header -->
+    <header class="header glass-panel">
+      <div class="header-left">
+        <div class="logo">
+          <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+            <path d="M2 17l10 5 10-5"/>
+            <path d="M2 12l10 5 10-5"/>
+          </svg>
+          <h1>IPC Debugger</h1>
+        </div>
+        <span class="badge badge-live">
+          <span class="pulse-dot"></span>
+          LIVE
+        </span>
+      </div>
+      <div class="header-right">
+        <button class="icon-btn" title="Activity">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/>
+          </svg>
+        </button>
+        <button class="icon-btn" title="Alerts">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="13,2 3,14 12,14 11,22 21,10 12,10 13,2"/>
+          </svg>
+        </button>
+        <button class="icon-btn" title="Settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="system-status glass-panel">
+  <span>System Health:</span>
+  <strong style="color: var(--success)">STABLE</strong>
+  <span style="margin-left:auto; font-family:JetBrains Mono">
+    Uptime: <span id="uptime">00:00:00</span>
+  </span>
+</div>
+
+
+    <!-- Stats Row -->
+    <div class="stats-row">
+      <div class="stat-card" id="stat-events">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <span class="stat-label">TOTAL EVENTS</span>
+          <span class="stat-value" id="total-events">0</span>
+          <span class="stat-subtitle">Last 24 hours</span>
+        </div>
+      </div>
+      <div class="stat-card stat-success" id="stat-processes">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="4" y="4" width="16" height="16" rx="2" ry="2"/>
+            <rect x="9" y="9" width="6" height="6"/>
+            <line x1="9" y1="1" x2="9" y2="4"/>
+            <line x1="15" y1="1" x2="15" y2="4"/>
+            <line x1="9" y1="20" x2="9" y2="23"/>
+            <line x1="15" y1="20" x2="15" y2="23"/>
+            <line x1="20" y1="9" x2="23" y2="9"/>
+            <line x1="20" y1="14" x2="23" y2="14"/>
+            <line x1="1" y1="9" x2="4" y2="9"/>
+            <line x1="1" y1="14" x2="4" y2="14"/>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <span class="stat-label">ACTIVE PROCESSES</span>
+          <span class="stat-value" id="active-processes">0</span>
+          <span class="stat-subtitle">Currently monitored</span>
+        </div>
+      </div>
+      <div class="stat-card stat-warning" id="stat-latency">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12,6 12,12 16,14"/>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <span class="stat-label">AVG LATENCY</span>
+          <span class="stat-value" id="avg-latency">0ms</span>
+          <span class="stat-subtitle">Response time</span>
+        </div>
+      </div>
+      <div class="stat-card stat-destructive" id="stat-issues">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <span class="stat-label">ACTIVE ISSUES</span>
+          <span class="stat-value" id="active-issues">0</span>
+          <span class="stat-subtitle">Requires attention</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Left Column -->
+      <div class="left-column">
+        <!-- Event Log -->
+        <div class="event-log glass-panel">
+          <div class="panel-header">
+            <h2>Event Log</h2>
+            <div class="event-controls">
+              <input type="text" id="event-search" placeholder="Search events..." class="search-input">
+              <select id="event-filter" class="filter-select">
+                <option value="all">All Types</option>
+                <option value="pipe">Pipes</option>
+                <option value="socket">Sockets</option>
+                <option value="message_queue">Message Queues</option>
+                <option value="shared_memory">Shared Memory</option>
+                <option value="signal">Signals</option>
+              </select>
+            </div>
+          </div>
+          <div class="event-list" id="event-list">
+            <!-- Events will be populated by JavaScript -->
+          </div>
+        </div>
+
+        <!-- Timeline -->
+        <div class="timeline glass-panel">
+          <div class="panel-header">
+            <h2>Event Timeline</h2>
+            <p class="panel-subtitle">Chronological view of IPC events</p>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-axis">
+              <span id="time-start">00:00:00</span>
+              <span id="time-mid">00:00:00</span>
+              <span id="time-end">00:00:00</span>
+            </div>
+            <div class="timeline-track" id="timeline-track">
+              <div class="scan-line"></div>
+              <!-- Timeline events will be populated by JavaScript -->
+            </div>
+            <div class="timeline-legend">
+              <span class="legend-item"><span class="legend-dot pipe"></span>pipe</span>
+              <span class="legend-item"><span class="legend-dot socket"></span>socket</span>
+              <span class="legend-item"><span class="legend-dot message_queue"></span>message queue</span>
+              <span class="legend-item"><span class="legend-dot shared_memory"></span>shared memory</span>
+              <span class="legend-item"><span class="legend-dot signal"></span>signal</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column -->
+      <div class="right-column">
+        <!-- Process Graph -->
+        <div class="process-graph glass-panel">
+          <div class="panel-header">
+            <h2>Process Communication Graph</h2>
+            <p class="panel-subtitle">Real-time visualization of IPC connections</p>
+          </div>
+          <div class="graph-container">
+            <canvas id="process-canvas"></canvas>
+            <div class="graph-legend">
+              <span class="legend-item"><span class="legend-dot running"></span>running</span>
+              <span class="legend-item"><span class="legend-dot blocked"></span>blocked</span>
+              <span class="legend-item"><span class="legend-dot waiting"></span>waiting</span>
+              <span class="legend-item"><span class="legend-dot terminated"></span>terminated</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Issue Panel -->
+        <div class="issue-panel glass-panel">
+          <div class="panel-header">
+            <h2>Detected Issues</h2>
+            <span class="badge badge-destructive" id="issue-count">0 active</span>
+          </div>
+          <div class="issue-list" id="issue-list">
+            <!-- Issues will be populated by JavaScript -->
+          </div>
+        </div>
+
+        <!-- IPC Distribution -->
+        <div class="distribution-panel glass-panel">
+          <h3>IPC Type Distribution</h3>
+          <div class="distribution-bars" id="distribution-bars">
+            <!-- Distribution bars will be populated by JavaScript -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="ipc-debugger.js"></script>
+</body>
+</html>
